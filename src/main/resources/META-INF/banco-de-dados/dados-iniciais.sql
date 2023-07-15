@@ -1,0 +1,1 @@
+insert into Produto (id, nome, preco, descricao) values (1, 'Kindle', 449.0, 'Conheça o novo Kindle, agora com iluminação embutida ajustável, permite que você leia em ambientes abertos ou fechados, a qualquer hora do dia.');

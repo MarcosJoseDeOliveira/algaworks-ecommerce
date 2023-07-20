@@ -2,14 +2,11 @@ package com.algaworks.ecommerce.relacionamentos;
 
 import com.algaworks.ecommerce.EntityManagerTest;
 import com.algaworks.ecommerce.model.*;
-import org.hibernate.tool.schema.internal.exec.AbstractScriptSourceInput;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 public class AutoRelacionamentoTest extends EntityManagerTest {
+
     @Test
     public void verificarRelacionamento() {
         Categoria categoriaPai = new Categoria();
@@ -31,8 +28,6 @@ public class AutoRelacionamentoTest extends EntityManagerTest {
 
         Categoria categoriaPaiVerificacao = entityManager.find(Categoria.class, categoriaPai.getId());
         Assertions.assertFalse(categoriaPaiVerificacao.getCategorias().isEmpty());
-
-
     }
 
 }

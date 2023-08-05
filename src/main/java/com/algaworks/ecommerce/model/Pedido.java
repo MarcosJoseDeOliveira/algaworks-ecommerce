@@ -21,9 +21,12 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+
+    @OneToMany(mappedBy = "pedido")
+    private List<ItemPedido> itens;
 
     @Column(name = "data_pedido")
     private LocalDateTime dataPedido;
@@ -31,8 +34,8 @@ public class Pedido {
     @Column(name = "data_conclusao")
     private LocalDateTime dataConclusao;
 
-    @Column(name = "nota_fiscal_id")
-    private Integer notaFiscalId;
+    @OneToOne(mappedBy = "pedido")
+    private NotaFiscal notaFiscal;
 
     private BigDecimal total;
 
@@ -42,6 +45,7 @@ public class Pedido {
     @Embedded
     private EnderecoEntregaPedido enderecoEntrega;
 
-    @OneToMany(mappedBy = "pedido")
-    private List<ItemPedido> itens;
+    @OneToOne(mappedBy = "pedido")
+    private PagamentoCartao pagamento;
+
 }

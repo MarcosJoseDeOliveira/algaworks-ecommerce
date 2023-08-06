@@ -1,65 +1,53 @@
-package com.algaworks.ecommerce.relacionamentos;
+package com.algaworks.ecommerce.mapeamentoavancado;
 
 import com.algaworks.ecommerce.EntityManagerTest;
 import com.algaworks.ecommerce.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class RelacionamentoOneToManyTest extends EntityManagerTest {
-    @Test
-    public void verificarRelacionamento() {
-        Cliente cliente = entityManager.find(Cliente.class, 1);
-
-        Pedido pedido = new Pedido();
-        pedido.setStatus(StatusPedido.AGUARDANDO);
-        pedido.setDataCriacao(LocalDateTime.now());
-        pedido.setTotal(BigDecimal.TEN);
-
-        pedido.setCliente(cliente);
-
-        entityManager.getTransaction().begin();
-        entityManager.persist(pedido);
-        entityManager.getTransaction().commit();
-
-        entityManager.clear();
-
-        Cliente clienteVerificacao = entityManager.find(Cliente.class, cliente.getId());
-        Assertions.assertFalse(clienteVerificacao.getPedidos().isEmpty());
-    }
+public class ChaveCompostaTest extends EntityManagerTest {
 
     @Test
-    public void verificarRelacionamentoPedido() {
+    public void salvarItem() {
         entityManager.getTransaction().begin();
 
         Cliente cliente = entityManager.find(Cliente.class, 1);
         Produto produto = entityManager.find(Produto.class, 1);
 
         Pedido pedido = new Pedido();
-        pedido.setStatus(StatusPedido.AGUARDANDO);
-        pedido.setDataCriacao(LocalDateTime.now());
-        pedido.setTotal(BigDecimal.TEN);
         pedido.setCliente(cliente);
+        pedido.setDataCriacao(LocalDateTime.now());
+        pedido.setStatus(StatusPedido.AGUARDANDO);
+        pedido.setTotal(produto.getPreco());
 
         ItemPedido itemPedido = new ItemPedido();
 //        itemPedido.setPedidoId(pedido.getId()); // IdClass
 //        itemPedido.setProdutoId(produto.getId()); // IdClass
         itemPedido.setId(new ItemPedidoId(pedido.getId(), produto.getId()));
-        itemPedido.setPrecoProduto(produto.getPreco());
-        itemPedido.setQuantidade(10);
         itemPedido.setPedido(pedido);
         itemPedido.setProduto(produto);
+        itemPedido.setPrecoProduto(produto.getPreco());
+        itemPedido.setQuantidade(3);
 
         entityManager.persist(pedido);
         entityManager.persist(itemPedido);
+
         entityManager.getTransaction().commit();
 
         entityManager.clear();
 
         Pedido pedidoVerificacao = entityManager.find(Pedido.class, pedido.getId());
+        Assertions.assertNotNull(pedidoVerificacao);
         Assertions.assertFalse(pedidoVerificacao.getItens().isEmpty());
     }
 
+    @Test
+    public void bucarItem() {
+        ItemPedido itemPedido = entityManager.find(
+                ItemPedido.class, new ItemPedidoId(1, 1));
+
+        Assertions.assertNotNull(itemPedido);
+    }
 }

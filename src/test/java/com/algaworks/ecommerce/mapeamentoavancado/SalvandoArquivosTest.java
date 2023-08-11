@@ -7,12 +7,9 @@ import com.algaworks.ecommerce.model.Produto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class SalvandoArquivosTest extends EntityManagerTest {
@@ -57,6 +54,7 @@ public class SalvandoArquivosTest extends EntityManagerTest {
         produto.setDescricao("Capacidade de 8GB 2.0 Vermerlho");
         produto.setPreco(BigDecimal.TEN);
         produto.setFoto(carregarArquivo("/pendrive.webp"));
+        produto.setDataCriacao(LocalDateTime.now());
 
 
         entityManager.getTransaction().begin();
@@ -69,6 +67,7 @@ public class SalvandoArquivosTest extends EntityManagerTest {
         Assertions.assertNotNull(produtoVerificacao.getFoto());
         Assertions.assertTrue(produtoVerificacao.getFoto().length > 0);
 
+        /*
         try {
             OutputStream out = new FileOutputStream(
                     Files.createFile(Paths.get(
@@ -77,6 +76,7 @@ public class SalvandoArquivosTest extends EntityManagerTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+         */
     }
 
     private static byte[] carregarArquivo(String arquivo) {

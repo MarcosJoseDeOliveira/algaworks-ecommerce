@@ -2,9 +2,9 @@ package com.algaworks.ecommerce.model;
 
 import com.algaworks.ecommerce.listener.GenericoListner;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.Length;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,33 +12,38 @@ import java.util.List;
 
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners( { GenericoListner.class })
 @Entity
-@Table(name = "produto")
-public class Produto {
+@Table(name = "produto",
+        uniqueConstraints = { @UniqueConstraint(name = "unq_nome", columnNames = {"nome"}) },
+        indexes = { @Index(name = "idx_nome", columnList = "nome") })
+public class Produto extends EntidadeBaseInteger {
 
-    @EqualsAndHashCode.Include
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(name = "data_criacao", updatable = false)
+    @Column(name = "data_criacao", updatable = false, nullable = false)
     private LocalDateTime dataCriacao;
 
     @Column(name = "data_ultima_atualizacao", insertable = false)
     private LocalDateTime dataUltimaAtualizacao;
 
+    @Column(length = 100, nullable = false)
     private String nome;
 
+    @Lob
+    @Column(length = Length.LONG32) // 2Gb
     private String descricao;
 
     private BigDecimal preco;
 
+    @Lob
+    @Column(length = 2000)
+    private byte[] foto;
+
     @ManyToMany
     @JoinTable(name = "produto_categoria",
-            joinColumns = @JoinColumn(name = "produto_id"),
-            inverseJoinColumns = @JoinColumn(name = "categoria_id"))
+            joinColumns = @JoinColumn(name = "produto_id", nullable = false,
+                    foreignKey = @ForeignKey(name = "fk_produto_categoria_produto")),
+            inverseJoinColumns = @JoinColumn(name = "categoria_id", nullable = false,
+                    foreignKey = @ForeignKey(name = "fk_produto_categoria_categoria")))
     private List<Categoria> categorias;
 
     @OneToOne(mappedBy = "produto")
@@ -46,17 +51,15 @@ public class Produto {
 
     @ElementCollection
     @CollectionTable(name = "produto_tag",
-            joinColumns = @JoinColumn(name = "produto_id"))
-    @Column(name = "tag")
+            joinColumns = @JoinColumn(name = "produto_id", nullable = false,
+                    foreignKey = @ForeignKey(name = "fk_produto_tag_produto")))
+    @Column(name = "tag", length = 50, nullable = false)
     private List<String> tags;
 
     @ElementCollection
     @CollectionTable(name = "produto_atributo",
-            joinColumns = @JoinColumn(name = "produto_id"))
+            joinColumns = @JoinColumn(name = "produto_id", nullable = false,
+                    foreignKey = @ForeignKey(name = "fk_produto_atributo_produto")))
     private List<Atributo> atributos;
-
-    @Lob
-    @Column(length = 2000)
-    private byte[] foto;
 
 }

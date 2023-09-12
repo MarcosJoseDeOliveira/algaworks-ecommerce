@@ -16,6 +16,21 @@ import java.util.Objects;
 public class BasicoJPQLTest extends EntityManagerTest {
 
     @Test
+    public void usarDistinct() {
+
+        String jpql = "select  distinct p from Pedido p " +
+                " join p.itens i join i.produto pro " +
+                " where pro.id in (1, 2, 3, 4) ";
+
+        TypedQuery<Pedido> typedQuery = entityManager.createQuery(jpql, Pedido.class);
+
+        List<Pedido> lista = typedQuery.getResultList();
+        Assertions.assertFalse(lista.isEmpty());
+
+        System.out.println(lista.size());
+    }
+
+    @Test
     public void ordenarResultados() {
         String jpql = "select c from Cliente c order by c.nome asc"; // desc
 
@@ -63,6 +78,7 @@ public class BasicoJPQLTest extends EntityManagerTest {
         Assertions.assertTrue(Cliente.class.equals(listaClientes.get(0).getClass()));
 
     }
+
     @Test
     public void buscarPorIdentificador() {
         // entityManager.find(Pedido.class, 1)

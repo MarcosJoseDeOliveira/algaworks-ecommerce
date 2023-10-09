@@ -1,6 +1,7 @@
 package com.algaworks.ecommerce.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,11 +14,12 @@ import java.util.List;
         uniqueConstraints = { @UniqueConstraint(name = "unq_nome", columnNames = {"nome"}) })
 public class Categoria extends EntidadeBaseInteger {
 
+    @NotBlank
     @Column(length = 100, nullable = false)
     private String nome;
 
     @ManyToOne
-    @JoinColumn(name = "categoria_pai_id", nullable = false,
+    @JoinColumn(name = "categoria_pai_id",
             foreignKey = @ForeignKey(name = "fk_categoria_categoriapai"))
     private Categoria categoriaPai;
 
@@ -26,4 +28,5 @@ public class Categoria extends EntidadeBaseInteger {
 
     @ManyToMany(mappedBy = "categorias")
     private List<Produto> produtos;
+
 }

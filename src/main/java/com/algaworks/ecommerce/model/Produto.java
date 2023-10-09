@@ -3,6 +3,10 @@ package com.algaworks.ecommerce.model;
 import com.algaworks.ecommerce.dto.ProdutoDTO;
 import com.algaworks.ecommerce.listener.GenericoListner;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Length;
@@ -55,19 +59,23 @@ import java.util.List;
         indexes = { @Index(name = "idx_nome", columnList = "nome") })
 public class Produto extends EntidadeBaseInteger {
 
+    @PastOrPresent
+    @NotNull
     @Column(name = "data_criacao", updatable = false, nullable = false)
     private LocalDateTime dataCriacao;
 
+    @PastOrPresent
     @Column(name = "data_ultima_atualizacao", insertable = false)
     private LocalDateTime dataUltimaAtualizacao;
 
+    @NotBlank
     @Column(length = 100, nullable = false)
     private String nome;
 
     @Lob
-    @Column(length = Length.LONG32) // 2Gb
     private String descricao;
 
+    @Positive
     private BigDecimal preco;
 
     @Lob
